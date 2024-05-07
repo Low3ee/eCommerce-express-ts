@@ -2,9 +2,10 @@
   "name": "ecommerce-express-ts",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "./build/index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "dev": "concurrently \"yarn run build -w\" \"node --watch-path=build .\""
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "@types/mysql": "^2.15.26",
     "@types/node": "^20.12.8",
     "@types/uuid": "^9.0.8",
+    "concurrently": "^8.2.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
