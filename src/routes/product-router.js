@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const db_js_1 = __importDefault(require("../lib/db.js"));
 const user_validation_js_1 = require("../middleware/user-validation.js");
 const productRouter = express_1.default.Router();
-productRouter.post("/addProduct", user_validation_js_1.validateAdminSession, (req, res, next) => {
+productRouter.post("/addProduct", (req, res, next) => {
     db_js_1.default.query("SELECT id FROM products WHERE LOWER(name) = LOWER(?)", [req.body.name], (err, result) => {
         if (result && result.length) {
             return res.status(409).send({
@@ -34,6 +34,19 @@ productRouter.post("/addProduct", user_validation_js_1.validateAdminSession, (re
                 }
             });
         }
+    });
+});
+productRouter.get("/newArrivals", (req, res, next) => {
+    db_js_1.default.query("SELECT * FROM products ORDER BY created_at LIMIT 10", (err, result) => {
+        if (err) {
+            return res.status(500).send({
+                message: err,
+            });
+        }
+        return res.status(200).send({
+            message: "new products fetched successfully.",
+            products: result,
+        });
     });
 });
 productRouter.get("/allProducts", (req, res, next) => {

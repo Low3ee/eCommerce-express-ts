@@ -1,18 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import db from "../lib/db.js";
-import {
-  validateAdminSession,
-  validateRegistration,
-  validateSession,
-} from "../middleware/user-validation.js";
-import { request } from "http";
+import { validateAdminSession } from "../middleware/user-validation.js";
 
 const productRouter = express.Router();
 
 productRouter.post(
   "/addProduct",
-  validateAdminSession,
   (req: Request, res: Response, next: NextFunction) => {
     db.query(
       "SELECT id FROM products WHERE LOWER(name) = LOWER(?)",
@@ -50,6 +43,25 @@ productRouter.post(
   }
 );
 
+productRouter.get(
+  "/newArrivals",
+  (req: Request, res: Response, next: NextFunction) => {
+    db.query(
+      "SELECT * FROM products ORDER BY created_at LIMIT 10",
+      (err: any, result: any) => {
+        if (err) {
+          return res.status(500).send({
+            message: err,
+          });
+        }
+        return res.status(200).send({
+          message: "new products fetched successfully.",
+          products: result,
+        });
+      }
+    );
+  }
+);
 productRouter.get(
   "/allProducts",
   (req: Request, res: Response, next: NextFunction) => {
